@@ -1,115 +1,151 @@
+import { useState } from "react";
 import Image from "next/image";
-import localFont from "next/font/local";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { motion } from "framer-motion";
+import axios from "axios";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [username, setUsername] = useState("");
+  const [isCracked, setIsCracked] = useState(false);
+  const [fortune, setFortune] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    setError("");
+    setFortune("");
+
+    if (!username.trim()) {
+      setError("Please enter a GitHub username.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `/api/generateFortune?username=${username}`
+      );
+      setFortune(response.data.fortune);
+      setIsCracked(true);
+    } catch (err) {
+      setError("Failed to generate fortune. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const reset = () => {
+    setUsername("");
+    setIsCracked(false);
+    setFortune("");
+    setError("");
+  };
+
+  return (
+    <div className="relative flex flex-col items-center py-20 min-h-screen bg-[#fab5e1] px-4">
+      {/* White circle */}
+
+      {/* Error message */}
+      {error && (
+        <div className="mb-4 bg-red-100 text-red-800 p-2 rounded">{error}</div>
+      )}
+
+      <div className="relative z-10 flex items-center justify-center">
+        {!isCracked ? (
+          <div className="p-4 rounded flex flex-col items-center justify-center">
             <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/whole.png"
+              alt="Fortune Cookie "
+              className="w-64 h-64"
+              width={100}
+              height={100}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+            <h1 className="mb-4 text-2xl font-bold">
+              Have a Peek Into Your Fortune🥠 🔮
+            </h1>
+            <Input
+              placeholder="Enter your GitHub username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={isLoading}
+              className="mb-4 text-black"
+            />
+            <Button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="mt-4"
+            >
+              {isLoading ? (
+                "Loading..."
+              ) : (
+               "Take A Peek 🫣"
+              )}
+            </Button>
+          </div>
+        ) : (
+          <div className="relative">
+            {/* Cracked fortune cookie animation */}
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              {/* Left half of the cracked cookie */}
+              <motion.div
+                initial={{ rotate: 0, x: 0 }}
+                animate={{ rotate: -45, x: -50 }}
+                transition={{ duration: 0.5 }}
+                className="absolute left-0"
+              >
+                <Image
+                  src="/left-side.png"
+                  alt="Left Half"
+                  width={150}
+                  height={150}
+                />
+              </motion.div>
+              {/* Right half of the cracked cookie */}
+              <motion.div
+                initial={{ rotate: 0, x: 0 }}
+                animate={{ rotate: 45, x: 50 }}
+                transition={{ duration: 0.5 }}
+                className="absolute right-0"
+              >
+                <Image
+                  src="/images/right-side.png"
+                  alt="Right Half"
+                  width={150}
+                  height={150}
+                />
+              </motion.div>
+
+              {/* Fortune text displayed on a white strip */}
+              <motion.div
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <div className="bg-white px-4 py-2 shadow-md rounded">
+                  <p className="text-center text-lg">{fortune}</p>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Reset button to enter a new username */}
+            <Button
+              onClick={reset}
+              className="mt-4 bg-blue-500 text-white p-2 rounded"
+            >
+              Try Again
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
