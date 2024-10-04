@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { PiCoffeeBold } from "react-icons/pi";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -24,10 +25,11 @@ export default function Home() {
     }
 
     try {
-      const response = await axios.get(
-        `/api/generateFortune?username=${username}`
-      );
-      setFortune(response.data.fortune);
+      // const response = await axios.get(
+      //   `/api/generateFortune?username=${username}`
+      // );
+      // console.log(response);
+      // setFortune(response.data);
       setIsCracked(true);
     } catch (err) {
       setError("Failed to generate fortune. Please try again.");
@@ -45,7 +47,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative flex flex-col items-center py-20 min-h-screen bg-[#fab5e1] px-4">
+    <div className="relative flex flex-col items-center py-20 h-screen bg-[#fab5e1] px-4">
       {/* White circle */}
 
       {/* Error message */}
@@ -53,9 +55,21 @@ export default function Home() {
         <div className="mb-4 bg-red-100 text-red-800 p-2 rounded">{error}</div>
       )}
 
-      <div className="relative z-10 flex items-center justify-center">
-        {!isCracked ? (
-          <div className="p-4 rounded flex flex-col items-center justify-center">
+      <div className="w-full h-full z-10 flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center ">
+          <h1 className="mb-4 text-2xl font-bold">
+            Have a Peek Into Your Fortune 🔮
+          </h1>
+          <Input
+            placeholder="Enter your GitHub username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={isLoading}
+            className="mb-4 text-black"
+          />
+        </div>
+        <div className={`${!isCracked ? "" : "w-full"}`}>
+          {!isCracked ? (
             <Image
               src="/whole.png"
               alt="Fortune Cookie "
@@ -63,89 +77,82 @@ export default function Home() {
               width={100}
               height={100}
             />
-
-            <h1 className="mb-4 text-2xl font-bold">
-              Have a Peek Into Your Fortune🥠 🔮
-            </h1>
-            <Input
-              placeholder="Enter your GitHub username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              disabled={isLoading}
-              className="mb-4 text-black"
-            />
-            <Button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="mt-4"
-            >
-              {isLoading ? (
-                "Loading..."
-              ) : (
-               "Take A Peek 🫣"
-              )}
-            </Button>
-          </div>
-        ) : (
-          <div className="relative">
-            {/* Cracked fortune cookie animation */}
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              {/* Left half of the cracked cookie */}
+          ) : (
+            <div className="flex  w-full flex-col items-center justify-center">
               <motion.div
-                initial={{ rotate: 0, x: 0 }}
-                animate={{ rotate: -45, x: -50 }}
-                transition={{ duration: 0.5 }}
-                className="absolute left-0"
-              >
-                <Image
-                  src="/left-side.png"
-                  alt="Left Half"
-                  width={150}
-                  height={150}
-                />
-              </motion.div>
-              {/* Right half of the cracked cookie */}
-              <motion.div
-                initial={{ rotate: 0, x: 0 }}
-                animate={{ rotate: 45, x: 50 }}
-                transition={{ duration: 0.5 }}
-                className="absolute right-0"
-              >
-                <Image
-                  src="/images/right-side.png"
-                  alt="Right Half"
-                  width={150}
-                  height={150}
-                />
-              </motion.div>
-
-              {/* Fortune text displayed on a white strip */}
-              <motion.div
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                className=" flex items-center justify-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
               >
-                <div className="bg-white px-4 py-2 shadow-md rounded">
-                  <p className="text-center text-lg">{fortune}</p>
-                </div>
-              </motion.div>
-            </motion.div>
+                <motion.div
+                  initial={{ rotate: 0, x: 0 }}
+                  animate={{ rotate: -45, x: -50 }}
+                  transition={{ duration: 0.5 }}
+                  className=" left-0"
+                >
+                  <Image
+                    src="/left-side.png"
+                    alt="Left Half"
+                    width={100}
+                    height={100}
+                  />
+                </motion.div>
 
-            {/* Reset button to enter a new username */}
-            <Button
-              onClick={reset}
-              className="mt-4 bg-blue-500 text-white p-2 rounded"
-            >
-              Try Again
-            </Button>
-          </div>
+                <motion.div
+                  initial={{ rotate: 0, x: 0 }}
+                  animate={{ rotate: 45, x: 50 }}
+                  transition={{ duration: 0.5 }}
+                  className=" right-0"
+                >
+                  <Image
+                    src="/right-side.png"
+                    alt="Right Half"
+                    width={100}
+                    height={100}
+                  />
+                </motion.div>
+              </motion.div>
+
+              <div className="bg-white p-4 w-[50%] md:w-[30%]  shadow-md rounded-md">
+                <p className=" text-lg text-black transform ">{fortune}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {!isCracked ? (
+          <Button onClick={handleSubmit} disabled={isLoading} className="mt-4">
+            {isLoading ? "Loading..." : "Take A Peek 🫣"}
+          </Button>
+        ) : (
+          <Button onClick={reset} className="mt-4 ">
+            Try Again
+          </Button>
         )}
       </div>
+
+      <footer className="absolute bottom-4 flex flex-col md:flex-row items-center gap-6  text-white text-center">
+        <p>
+          Created by{" "}
+          <a
+            href="https://github.com/oleanjikingcode"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-yellow-400"
+          >
+            OleanjiKingCode
+          </a>
+        </p>
+        <a
+          href="https://buymeacoffee.com/oleanji"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white flex items-center hover:text-yellow-400"
+        >
+          Buy me a coffee
+          <PiCoffeeBold className="w-6 h-6 ml-2" />
+        </a>
+      </footer>
     </div>
   );
 }

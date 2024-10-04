@@ -2,16 +2,13 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import OpenAI from "openai";
 
-const openai = new OpenAI();
-
-type Data = {
-  fortune?: string;
-  error?: string;
-};
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY ?? "",
+});
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
   const { username } = req.query;
 
@@ -31,8 +28,6 @@ export default async function handler(
 
     const userData = userResponse.data;
     const reposData = reposResponse.data;
-
-    console.log(userData, reposData);
 
     // Analyze repositories to infer developer type
     const languageCounts: Record<string, number> = {};
@@ -56,27 +51,31 @@ export default async function handler(
       favorite_language: favoriteLanguage || "Unknown",
     };
 
+    // Set headers to allow progressive streaming
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    // Ensure the socket remains open
+    res.socket?.setKeepAlive(true);
+    
     // Generate a fortune using OpenAI API
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an ancient seer who gives mystical fortunes and playful roasts to GitHub users.",
-        },
-        {
-          role: "user",
-          content: `This is the GitHub user info: ${JSON.stringify(
-            userInfo
-          )}. Please generate a fortune in a medieval tone with a bit of roast.`,
-        },
-      ],
+      messages: [],
+      stream: true,
     });
 
-    // Send the generated fortune back to the frontend
-    const fortune = completion.choices[0].message?.content?.trim();
-    res.status(200).json({ fortune });
+    // Stream the response chunk by chunk
+    for await (const chunk of completion) {
+      const chunkContent = chunk.choices[0]?.delta?.content || "";
+
+      // Write the chunk to the response
+      res.write(chunkContent);
+    }
+
+    // End the response stream when done
+    res.end();
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to generate fortune" });
