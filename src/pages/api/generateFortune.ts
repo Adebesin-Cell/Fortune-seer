@@ -58,11 +58,23 @@ export default async function handler(
 
     // Ensure the socket remains open
     res.socket?.setKeepAlive(true);
-    
+
     // Generate a fortune using OpenAI API
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages: [],
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are an ancient seer who gives mystical fortunes and playful roasts to GitHub users.",
+        },
+        {
+          role: "user",
+          content: `This is the GitHub user info: ${JSON.stringify(
+            userInfo
+          )}. Please generate a fortune in a medieval tone with a bit of roast.`,
+        },
+      ],
       stream: true,
     });
 

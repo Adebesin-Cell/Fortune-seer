@@ -1,17 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PiCoffeeBold } from "react-icons/pi";
+import { GrPowerReset } from "react-icons/gr";
+import { FaXTwitter } from "react-icons/fa6";
+import { AiOutlineCloudDownload } from "react-icons/ai";
+import { RiLoader5Fill } from "react-icons/ri";
 
 export default function Home() {
   const [username, setUsername] = useState("");
   const [isCracked, setIsCracked] = useState(false);
-  const [fortune, setFortune] = useState("");
+  const [fortune, setFortune] = useState("dmflkvmqkemerk");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [downloadIsLoading, setDownloadIsLoading] = useState(false);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -28,7 +34,6 @@ export default function Home() {
       // const response = await axios.get(
       //   `/api/generateFortune?username=${username}`
       // );
-      // console.log(response);
       // setFortune(response.data);
       setIsCracked(true);
     } catch (err) {
@@ -39,6 +44,77 @@ export default function Home() {
     }
   };
 
+  const uploadToCloudinary = async () => {
+    try {
+      const response = await axios.post(
+        "/api/og",
+        { fortune },
+        {
+          responseType: "blob",
+        }
+      );
+
+      const blob = new Blob([response.data], { type: "image/png" });
+
+      const cloudName = process.env.CLOUDINARY_API_KEY ?? "dpsu7sqdk";
+
+      const formData = new FormData();
+      formData.append("file", blob, `${username}'s fortune`);
+      formData.append("upload_preset", "fortune");
+
+      // Upload to Cloudinary
+      const cloudinaryResponse = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const imageUrl = cloudinaryResponse.data.secure_url;
+      setImageUrl(imageUrl);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isCracked) uploadToCloudinary();
+  }, [isCracked]);
+
+  const downloadImage = async () => {
+    try {
+      setDownloadIsLoading(true);
+
+      // Download the uploaded image
+      const downloadResponse = await axios.get(imageUrl, {
+        responseType: "blob",
+      });
+
+      const downloadLink = document.createElement("a");
+      const url = window.URL.createObjectURL(downloadResponse.data);
+      downloadLink.href = url;
+      downloadLink.setAttribute("download", "magic-card.png");
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    } catch (error) {
+      console.error("Error uploading or downloading image:", error);
+    } finally {
+      setDownloadIsLoading(false);
+    }
+  };
+
+  const shareToTwitter = () => {
+    const tweetText = `Check out this magical fortune card I generated! 🧙‍♂️✨`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      tweetText
+    )}&url=${encodeURIComponent(imageUrl)}`;
+
+    window.open(twitterUrl, "_blank");
+  };
   const reset = () => {
     setUsername("");
     setIsCracked(false);
@@ -113,21 +189,47 @@ export default function Home() {
                 </motion.div>
               </motion.div>
 
-              <div className="bg-white p-4 w-[50%] md:w-[30%]  shadow-md rounded-md">
+              {/* <div className="bg-white p-4 w-[50%] md:w-[30%]  shadow-md rounded-md">
                 <p className=" text-lg text-black transform ">{fortune}</p>
-              </div>
+              </div> */}
             </div>
           )}
         </div>
 
         {!isCracked ? (
           <Button onClick={handleSubmit} disabled={isLoading} className="mt-4">
-            {isLoading ? "Loading..." : "Take A Peek 🫣"}
+            {isLoading && (
+              <RiLoader5Fill className="animate-spin w-6 h-6 self-center duration-700" />
+            )}{" "}
+            Take A Peek 🫣
           </Button>
         ) : (
-          <Button onClick={reset} className="mt-4 ">
-            Try Again
-          </Button>
+          <div className="flex gap-5 items-center">
+            <Button
+              onClick={downloadImage}
+              className="mt-4 gap-2 shadow-sm shadow-black"
+            >
+              {downloadIsLoading ? (
+                <RiLoader5Fill className="animate-spin w-6 h-6 self-center duration-700" />
+              ) : (
+                <AiOutlineCloudDownload />
+              )}{" "}
+              <span>Download Image </span>
+            </Button>
+            <Button
+              onClick={shareToTwitter}
+              className="mt-4 gap-2 shadow-sm shadow-black"
+            >
+              <FaXTwitter /> <span>Share on Twitter</span>
+            </Button>
+
+            <Button
+              onClick={reset}
+              className="mt-4 gap-2 shadow-sm shadow-black"
+            >
+              <GrPowerReset /> <span>Try Again</span>
+            </Button>
+          </div>
         )}
       </div>
 
@@ -138,7 +240,7 @@ export default function Home() {
             href="https://github.com/oleanjikingcode"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white hover:text-yellow-400"
+            className="text-white hover:text-[#e881c2]"
           >
             OleanjiKingCode
           </a>
@@ -147,7 +249,7 @@ export default function Home() {
           href="https://buymeacoffee.com/oleanji"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white flex items-center hover:text-yellow-400"
+          className="text-white flex items-center hover:text-[#e881c2]"
         >
           Buy me a coffee
           <PiCoffeeBold className="w-6 h-6 ml-2" />
