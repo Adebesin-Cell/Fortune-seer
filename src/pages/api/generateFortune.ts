@@ -31,6 +31,7 @@ export default async function handler(
 
     // Analyze repositories to infer developer type
     const languageCounts: Record<string, number> = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reposData.forEach((repo: any) => {
       if (repo.language) {
         languageCounts[repo.language] =

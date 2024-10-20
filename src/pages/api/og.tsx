@@ -68,6 +68,9 @@ export default async function handler(req: NextRequest) {
       }
     );
   } catch (error) {
-    return NextResponse.json({ error: "Invalid Request" }, { status: 400 });
+    return NextResponse.json(
+      { error: `Invalid Request:, ${error}` },
+      { status: 400 }
+    );
   }
 }
