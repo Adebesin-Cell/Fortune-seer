@@ -124,9 +124,9 @@ export default function Home() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center py-20 min-h-screen bg-[#1a1a1a] px-4">
-      <div className="w-full h-full z-10 flex flex-col items-center justify-center">
-        <div className="flex flex-col items-center justify-center ">
+    <div className="relative flex flex-col items-center justify-center py-20 min-h-screen bg-[#1a1a1a] px-4 overflow-hidden">
+      <div className="w-full h-full z-10 flex flex-col items-center justify-center mb-20">
+        <div className="flex flex-col items-center justify-center text-center ">
           <h1 className="mb-4 text-2xl font-bold">
             Have a Peek Into Your Fortune 🔮
           </h1>
@@ -213,7 +213,7 @@ export default function Home() {
             Take A Peek 🫣
           </Button>
         ) : (
-          <div className="flex gap-5 items-center">
+          <div className="flex flex-col md:flex-row  md:gap-5 items-center justify-center  w-full">
             <Button
               onClick={downloadImage}
               className="mt-4 gap-2 shadow-sm shadow-black"
@@ -242,7 +242,7 @@ export default function Home() {
         )}
       </div>
 
-      <footer className="absolute bottom-4 flex flex-col md:flex-row items-center gap-6  text-white text-center">
+      <footer className="absolute bottom-4  flex flex-col md:flex-row items-center gap-6  text-white text-center">
         <p>
           Created by{" "}
           <a
