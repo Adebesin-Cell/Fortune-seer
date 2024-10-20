@@ -9,23 +9,22 @@ import { GrPowerReset } from "react-icons/gr";
 import { FaXTwitter } from "react-icons/fa6";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { RiLoader5Fill } from "react-icons/ri";
+import { toast } from "sonner";
 
 export default function Home() {
   const [username, setUsername] = useState("");
   const [isCracked, setIsCracked] = useState(false);
   const [fortune, setFortune] = useState("dmflkvmqkemerk");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [downloadIsLoading, setDownloadIsLoading] = useState(false);
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    setError("");
     setFortune("");
 
     if (!username.trim()) {
-      setError("Please enter a GitHub username.");
+      toast.error("Please enter a GitHub username.", { duration: 8000 });
       setIsLoading(false);
       return;
     }
@@ -37,7 +36,9 @@ export default function Home() {
       // setFortune(response.data);
       setIsCracked(true);
     } catch (err) {
-      setError("Failed to generate fortune. Please try again.");
+      toast.error("Failed to generate fortune. Please try again.", {
+        duration: 8000,
+      });
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -111,26 +112,18 @@ export default function Home() {
     const tweetText = `Check out this magical fortune card I generated! 🧙‍♂️✨`;
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       tweetText
-    )}&url=${encodeURIComponent(imageUrl)}`;
-
+    )}&url=${encodeURIComponent(imageUrl)}`
     window.open(twitterUrl, "_blank");
   };
+
   const reset = () => {
     setUsername("");
     setIsCracked(false);
     setFortune("");
-    setError("");
   };
 
   return (
-    <div className="relative flex flex-col items-center py-20 h-screen bg-[#fab5e1] px-4">
-      {/* White circle */}
-
-      {/* Error message */}
-      {error && (
-        <div className="mb-4 bg-red-100 text-red-800 p-2 rounded">{error}</div>
-      )}
-
+    <div className="relative flex flex-col items-center py-20 h-screen bg-[#1a1a1a] px-4">
       <div className="w-full h-full z-10 flex flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center ">
           <h1 className="mb-4 text-2xl font-bold">
@@ -141,7 +134,7 @@ export default function Home() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             disabled={isLoading}
-            className="mb-4 text-black"
+            className="mb-4"
           />
         </div>
         <div className={`${!isCracked ? "" : "w-full"}`}>
@@ -197,7 +190,12 @@ export default function Home() {
         </div>
 
         {!isCracked ? (
-          <Button onClick={handleSubmit} disabled={isLoading} className="mt-4">
+          <Button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="mt-4"
+            variant="outline"
+          >
             {isLoading && (
               <RiLoader5Fill className="animate-spin w-6 h-6 self-center duration-700" />
             )}{" "}
@@ -240,7 +238,7 @@ export default function Home() {
             href="https://github.com/oleanjikingcode"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white hover:text-[#e881c2]"
+            className="text-white hover:text-[#ababab]"
           >
             OleanjiKingCode
           </a>
@@ -249,7 +247,7 @@ export default function Home() {
           href="https://buymeacoffee.com/oleanji"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white flex items-center hover:text-[#e881c2]"
+          className="text-white flex items-center hover:text-[#ababab]"
         >
           Buy me a coffee
           <PiCoffeeBold className="w-6 h-6 ml-2" />
