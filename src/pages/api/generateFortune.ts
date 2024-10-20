@@ -66,7 +66,7 @@ export default async function handler(
         {
           role: "system",
           content:
-            "You are an ancient seer who gives mystical fortunes and playful roasts to GitHub users.",
+            "You are an ancient seer who gives mystical fortunes and playful roasts to GitHub users. Keep your responses concise and ensure they do not exceed 98 words.",
         },
         {
           role: "user",

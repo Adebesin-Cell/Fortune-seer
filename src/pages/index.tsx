@@ -30,10 +30,10 @@ export default function Home() {
     }
 
     try {
-      // const response = await axios.get(
-      //   `/api/generateFortune?username=${username}`
-      // );
-      // setFortune(response.data);
+      const response = await axios.get(
+        `/api/generateFortune?username=${username}`
+      );
+      setFortune(response.data);
       setIsCracked(true);
     } catch (err) {
       toast.error("Failed to generate fortune. Please try again.", {
@@ -55,6 +55,7 @@ export default function Home() {
         }
       );
 
+      console.log(fortune);
       const blob = new Blob([response.data], { type: "image/png" });
 
       const cloudName = process.env.CLOUDINARY_API_KEY ?? "dpsu7sqdk";
@@ -112,7 +113,7 @@ export default function Home() {
     const tweetText = `Check out this magical fortune card I generated! 🧙‍♂️✨`;
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       tweetText
-    )}&url=${encodeURIComponent(imageUrl)}`
+    )}&url=${encodeURIComponent(imageUrl)}`;
     window.open(twitterUrl, "_blank");
   };
 
@@ -123,7 +124,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative flex flex-col items-center py-20 h-screen bg-[#1a1a1a] px-4">
+    <div className="relative flex flex-col items-center justify-center py-20 min-h-screen bg-[#1a1a1a] px-4">
       <div className="w-full h-full z-10 flex flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center ">
           <h1 className="mb-4 text-2xl font-bold">
@@ -182,9 +183,19 @@ export default function Home() {
                 </motion.div>
               </motion.div>
 
-              {/* <div className="bg-white p-4 w-[50%] md:w-[30%]  shadow-md rounded-md">
-                <p className=" text-lg text-black transform ">{fortune}</p>
-              </div> */}
+              <div className="relative w-[700px] h-[700px] flex flex-col-reverse">
+                <Image
+                  src="/template.png"
+                  alt="Fortune Seer Card"
+                  layout="fill"
+                  objectFit="contain"
+                />
+                <div className="absolute inset-0 flex justify-center items-center px-4 ">
+                  <p className="text-center text-lg text-black font-semibold w-[300px] h-[400px] ">
+                    {fortune || "Your Fortune Awaits..."}
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>

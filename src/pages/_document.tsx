@@ -33,7 +33,7 @@ export default function Document() {
         {/* Image shown in social media previews (Replace with your hosted image URL) */}
         <meta
           property="og:image"
-          content="https://yourdomain.com/path-to-cookie-image.jpg"
+          content="https://res.cloudinary.com/dpsu7sqdk/image/upload/v1729444146/Fortune_Seer_1_jlzvee.png"
         />
         <meta property="og:image:width" content="920" />
         <meta property="og:image:height" content="470" />
@@ -50,7 +50,7 @@ export default function Document() {
         />
         <meta
           name="twitter:image"
-          content="https://yourdomain.com/path-to-cookie-image.jpg"
+          content="https://res.cloudinary.com/dpsu7sqdk/image/upload/v1729444146/Fortune_Seer_1_jlzvee.png"
         />
 
         {/* SEO keywords */}
@@ -58,9 +58,6 @@ export default function Document() {
           name="keywords"
           content="fortune cookie, developers, GitHub, mystical fortunes, developer roast, playful seer"
         />
-
-        {/* Page title */}
-        <title>Fortune Cookie For Devs - Mystical Wisdom & Fun</title>
       </Head>
       <body className="antialiased">
         <Main />
