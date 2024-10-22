@@ -44,6 +44,7 @@ export default function Home() {
           id: "fortune-generation",
         }
       );
+      
 
       const response = await axios.get(`/api/generateFortune`, {
         params: {

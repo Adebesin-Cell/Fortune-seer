@@ -85,3 +85,11 @@ export const shareToTwitter = (props: { imageUrl: string }) => {
   )}&url=${encodeURIComponent(props.imageUrl)}`;
   window.open(twitterUrl, "_blank");
 };
+
+
+export const statuses = [
+    'Getting user GitHub info...',
+    'Loading Wisdom...',
+    'Bringing insight to light...',
+    'Almost there... Master is thinking...',
+  ];
