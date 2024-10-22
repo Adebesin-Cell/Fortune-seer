@@ -22,3 +22,9 @@ A playful and mystical app that delivers developer-themed fortunes with a sprink
 - **Tailwind CSS**: For styling the app.
 - **Cloudinary**: For hosting images used in social sharing.
 - **Shadcn UI Components**: For UI components.
+
+
+#### Take aways to be used in future projects
+- Metadata for social sharing
+- Uploading images to Cloudinary
+- Integrating with OpenAI API

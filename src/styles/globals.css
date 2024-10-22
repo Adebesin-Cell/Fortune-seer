@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -21,7 +19,6 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
-
 
 @layer utilities {
   .text-balance {
@@ -91,5 +88,15 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+.spinner_ajPY {
+  transform-origin: center;
+  animation: spinner_AtaB 0.75s infinite linear;
+}
+@keyframes spinner_AtaB {
+  100% {
+    transform: rotate(360deg);
   }
 }

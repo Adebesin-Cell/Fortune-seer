@@ -10,6 +10,13 @@ import { FaXTwitter } from "react-icons/fa6";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { RiLoader5Fill } from "react-icons/ri";
 import { toast } from "sonner";
+import {
+  downloadImage,
+  FortunePromptType,
+  shareToTwitter,
+  uploadToCloudinary,
+} from "@/utils";
+import { SpinnerIcons } from "@/components/ui/spinner";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -19,103 +26,52 @@ export default function Home() {
   const [imageUrl, setImageUrl] = useState("");
   const [downloadIsLoading, setDownloadIsLoading] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (prompt: string) => {
     setIsLoading(true);
-    setFortune("");
 
     if (!username.trim()) {
-      toast.error("Please enter a GitHub username.", { duration: 8000 });
+      toast.error("Please enter a GitHub username.", { duration: 5000 });
       setIsLoading(false);
       return;
     }
 
     try {
-      const response = await axios.get(
-        `/api/generateFortune?username=${username}`
+      toast(
+        <div className=" flex items-center gap-2 ">
+          <SpinnerIcons /> <span>Loading Wisdom...</span>
+        </div>,
+        {
+          id: "fortune-generation",
+        }
       );
+
+      const response = await axios.get(`/api/generateFortune`, {
+        params: {
+          username: username,
+          promptType: prompt,
+        },
+      });
+
+  
       setFortune(response.data);
       setIsCracked(true);
+      toast.dismiss("fortune-generation");
     } catch (err) {
       toast.error("Failed to generate fortune. Please try again.", {
-        duration: 8000,
+        duration: 5000,
       });
+      toast.dismiss("fortune-generation");
       console.error(err);
     } finally {
+      toast.dismiss("fortune-generation");
       setIsLoading(false);
     }
   };
 
-  const uploadToCloudinary = async () => {
-    try {
-      const response = await axios.post(
-        "/api/og",
-        { fortune },
-        {
-          responseType: "blob",
-        }
-      );
-
-      console.log(fortune);
-      const blob = new Blob([response.data], { type: "image/png" });
-
-      const cloudName = process.env.CLOUDINARY_API_KEY ?? "dpsu7sqdk";
-
-      const formData = new FormData();
-      formData.append("file", blob, `${username}'s fortune`);
-      formData.append("upload_preset", "fortune");
-
-      // Upload to Cloudinary
-      const cloudinaryResponse = await axios.post(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      const imageUrl = cloudinaryResponse.data.secure_url;
-      setImageUrl(imageUrl);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    if (isCracked) uploadToCloudinary();
+    if (isCracked)
+      uploadToCloudinary({ fortune, username, updateImageUrl: setImageUrl });
   }, [isCracked]);
-
-  const downloadImage = async () => {
-    try {
-      setDownloadIsLoading(true);
-
-      // Download the uploaded image
-      const downloadResponse = await axios.get(imageUrl, {
-        responseType: "blob",
-      });
-
-      const downloadLink = document.createElement("a");
-      const url = window.URL.createObjectURL(downloadResponse.data);
-      downloadLink.href = url;
-      downloadLink.setAttribute("download", "magic-card.png");
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-    } catch (error) {
-      console.error("Error uploading or downloading image:", error);
-    } finally {
-      setDownloadIsLoading(false);
-    }
-  };
-
-  const shareToTwitter = () => {
-    const tweetText = `Check out this magical fortune card I generated! 🧙‍♂️✨`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      tweetText
-    )}&url=${encodeURIComponent(imageUrl)}`;
-    window.open(twitterUrl, "_blank");
-  };
 
   const reset = () => {
     setUsername("");
@@ -128,7 +84,7 @@ export default function Home() {
       <div className="w-full h-full z-10 flex flex-col items-center justify-center mb-20">
         <div className="flex flex-col items-center justify-center text-center ">
           <h1 className="mb-4 text-2xl font-bold">
-            Have a Peek Into Your Fortune 🔮
+            Peek into the Master’s Wisdom 🔥
           </h1>
           <Input
             placeholder="Enter your GitHub username"
@@ -201,21 +157,50 @@ export default function Home() {
         </div>
 
         {!isCracked ? (
-          <Button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="mt-4"
-            variant="outline"
-          >
-            {isLoading && (
-              <RiLoader5Fill className="animate-spin w-6 h-6 self-center duration-700" />
-            )}{" "}
-            Take A Peek 🫣
-          </Button>
+          <div className="flex flex-col md:flex-row  md:gap-5 items-center justify-center  w-full">
+            <Button
+              onClick={() => handleSubmit(FortunePromptType.JOB_ADVICE)}
+              disabled={isLoading}
+              className="mt-4"
+              variant="outline"
+            >
+              {/* {isLoading && (
+                <RiLoader5Fill className="animate-spin w-6 h-6 self-center duration-700" />
+              )}{" "} */}
+              Job Advice From the Stars 🌟
+            </Button>
+            <Button
+              onClick={() => handleSubmit(FortunePromptType.SKILL_IMPROVEMENT)}
+              disabled={isLoading}
+              className="mt-4"
+              variant="outline"
+            >
+              {/* {isLoading && (
+                <RiLoader5Fill className="animate-spin w-6 h-6 self-center duration-700" />
+              )}{" "} */}
+              Skill Improvement Advice 🚀
+            </Button>
+            <Button
+              onClick={() => handleSubmit(FortunePromptType.MYSTICAL_ROAST)}
+              disabled={isLoading}
+              className="mt-4"
+              variant="outline"
+            >
+              {/* {isLoading && (
+                <RiLoader5Fill className="animate-spin w-6 h-6 self-center duration-700" />
+              )}{" "} */}
+              Get a Mystical Roast 🍀
+            </Button>
+          </div>
         ) : (
           <div className="flex flex-col md:flex-row  md:gap-5 items-center justify-center  w-full">
             <Button
-              onClick={downloadImage}
+              onClick={() =>
+                downloadImage({
+                  downloadLoader: setDownloadIsLoading,
+                  imageUrl,
+                })
+              }
               className="mt-4 gap-2 shadow-sm shadow-black"
             >
               {downloadIsLoading ? (
@@ -226,7 +211,7 @@ export default function Home() {
               <span>Download Image </span>
             </Button>
             <Button
-              onClick={shareToTwitter}
+              onClick={() => shareToTwitter({ imageUrl })}
               className="mt-4 gap-2 shadow-sm shadow-black"
             >
               <FaXTwitter /> <span>Share on Twitter</span>
