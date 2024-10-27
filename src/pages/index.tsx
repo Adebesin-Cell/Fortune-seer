@@ -44,7 +44,6 @@ export default function Home() {
           id: "fortune-generation",
         }
       );
-      
 
       const response = await axios.get(`/api/generateFortune`, {
         params: {
@@ -53,7 +52,6 @@ export default function Home() {
         },
       });
 
-  
       setFortune(response.data);
       setIsCracked(true);
       toast.dismiss("fortune-generation");
@@ -92,7 +90,7 @@ export default function Home() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             disabled={isLoading}
-            className="mb-4"
+            className="mb-4 text-white dark:text-white"
           />
         </div>
         <div className={`${!isCracked ? "" : "w-full"}`}>
@@ -162,7 +160,7 @@ export default function Home() {
             <Button
               onClick={() => handleSubmit(FortunePromptType.JOB_ADVICE)}
               disabled={isLoading}
-              className="mt-4"
+              className="mt-4 text-white dark:text-white"
               variant="outline"
             >
               {/* {isLoading && (
@@ -173,7 +171,7 @@ export default function Home() {
             <Button
               onClick={() => handleSubmit(FortunePromptType.SKILL_IMPROVEMENT)}
               disabled={isLoading}
-              className="mt-4"
+              className="mt-4 text-white dark:text-white"
               variant="outline"
             >
               {/* {isLoading && (
@@ -184,7 +182,7 @@ export default function Home() {
             <Button
               onClick={() => handleSubmit(FortunePromptType.MYSTICAL_ROAST)}
               disabled={isLoading}
-              className="mt-4"
+              className="mt-4  text-white dark:text-white"
               variant="outline"
             >
               {/* {isLoading && (
