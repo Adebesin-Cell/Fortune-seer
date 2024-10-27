@@ -56,7 +56,7 @@ export default function Home() {
       setIsCracked(true);
       toast.dismiss("fortune-generation");
     } catch (err) {
-      toast.error("Failed to generate fortune. Please try again.", {
+      toast.error("Failed to generate fortune. Check username and try again.", {
         duration: 5000,
       });
       toast.dismiss("fortune-generation");
