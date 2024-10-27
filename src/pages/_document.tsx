@@ -33,7 +33,7 @@ export default function Document() {
         {/* Image shown in social media previews (Replace with your hosted image URL) */}
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/dpsu7sqdk/image/upload/v1729444146/Fortune_Seer_1_jlzvee.png"
+          content="https://res.cloudinary.com/dpsu7sqdk/image/upload/v1730019562/Screenshot_2024-10-27_at_8.43.45_AM_kmuj5n.png"
         />
         <meta property="og:image:width" content="920" />
         <meta property="og:image:height" content="470" />
