@@ -50,7 +50,7 @@ export default function Document() {
         />
         <meta
           name="twitter:image"
-          content="https://res.cloudinary.com/dpsu7sqdk/image/upload/v1729444146/Fortune_Seer_1_jlzvee.png"
+          content="https://res.cloudinary.com/dpsu7sqdk/image/upload/v1730019562/Screenshot_2024-10-27_at_8.43.45_AM_kmuj5n.png"
         />
 
         {/* SEO keywords */}
