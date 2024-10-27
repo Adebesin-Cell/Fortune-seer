@@ -81,7 +81,7 @@ export default function Home() {
   return (
     <div className="relative flex flex-col items-center justify-center py-20 min-h-screen bg-[#1a1a1a] px-4 overflow-hidden">
       <div className="w-full h-full z-10 flex flex-col items-center justify-center mb-20">
-        <div className="flex flex-col items-center justify-center text-center ">
+        <div className="flex flex-col items-center justify-center text-center text-white dark:text-white ">
           <h1 className="mb-4 text-2xl font-bold">
             Peek into the Master’s Wisdom 🔥
           </h1>
