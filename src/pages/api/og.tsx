@@ -24,7 +24,7 @@ export default async function handler(req: NextRequest) {
           }}
         >
           <img
-            src="https://res.cloudinary.com/dpsu7sqdk/image/upload/v1729444519/Fortune_Seer_2_ykptce.png"
+            src="https://res.cloudinary.com/dpsu7sqdk/image/upload/v1730106209/template_ge38ci.png"
             alt="Fortune Seer Card"
             style={{
               position: "absolute",

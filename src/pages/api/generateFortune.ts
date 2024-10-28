@@ -10,14 +10,14 @@ const openai = new OpenAI({
 function getAIBehaviorPrompt(promptType: string) {
   switch (promptType) {
     case FortunePromptType.JOB_ADVICE:
-      return `You are an all-knowing master of coding wisdom. Based on the user's GitHub profile, give concise advice on how they can land jobs. Add witty humor, make it sharp and clever, with a light roast. Limit to 98 words.`;
+      return `You are an all-knowing master of coding wisdom. Based on the user's GitHub profile, give concise advice on how they can land jobs. Add witty humor, make it sharp and clever, with a light roast. Limit to 80 words.`;
 
     case FortunePromptType.SKILL_IMPROVEMENT:
-      return `You are an all-knowing mentor who gives sharp, insightful feedback. Look at the GitHub profile provided and suggest how the user can improve their coding skills. Be witty, wise, and add a playful roast while staying under 98 words.`;
+      return `You are an all-knowing mentor who gives sharp, insightful feedback. Look at the GitHub profile provided and suggest how the user can improve their coding skills. Be witty, wise, and add a playful roast while staying under 80 words.`;
 
     case FortunePromptType.MYSTICAL_ROAST:
     default:
-      return `You are a master of both wit and wisdom. Craft a funny, insightful roast of the user's GitHub profile with sharp humor. Make it dev-oriented, cocky, and clever, but stay under 98 words.`;
+      return `You are a master of both wit and wisdom. Craft a funny, insightful roast of the user's GitHub profile with sharp humor. Make it dev-oriented, cocky, and clever, but stay under 80 words.`;
   }
 }
 
